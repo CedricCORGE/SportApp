@@ -6,6 +6,7 @@ import Ionicons from "react-native-vector-icons/Ionicons";
 
 import { Profile } from "./src/profile/Profile";
 import { Home } from "./src/home/Home";
+import { Timer } from "./src/timer/Timer";
 
 const Tab = createBottomTabNavigator();
 
@@ -42,6 +43,7 @@ export default function App() {
             );
           }}
         />
+        <Tab.Screen name="Timer" children={() => <Timer time={10} />} />
       </Tab.Navigator>
     </NavigationContainer>
   );
