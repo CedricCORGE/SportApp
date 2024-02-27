@@ -6,7 +6,9 @@ import Ionicons from "react-native-vector-icons/Ionicons";
 
 import { Profile } from "./src/profile/Profile";
 import { Home } from "./src/home/Home";
+import { TimerSetUp } from "./src/TimerSetUp/TimerSetUp";
 import { Timer } from "./src/timer/Timer";
+import { FirstScreenNavigator } from "./src/CustomNavigator/CustomNavigator";
 
 const Tab = createBottomTabNavigator();
 
@@ -23,6 +25,8 @@ export default function App() {
               iconName = focused ? "person" : "person-outline";
             } else if (route.name === "Home") {
               iconName = focused ? "home" : "home-outline";
+            } else if (route.name === "Timer") {
+              iconName = focused ? "timer" : "timer-outline";
             }
 
             return <Ionicons name={iconName} size={size} color={color} />;
@@ -43,7 +47,7 @@ export default function App() {
             );
           }}
         />
-        <Tab.Screen name="Timer" children={() => <Timer time={10} />} />
+        <Tab.Screen name="Timer" component={FirstScreenNavigator} />
       </Tab.Navigator>
     </NavigationContainer>
   );

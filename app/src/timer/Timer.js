@@ -5,10 +5,10 @@ import { useState, useEffect } from "react";
 import { Icon, IconButton } from "react-native-paper";
 import { Audio } from "expo-av";
 
-export const Timer = (props) => {
+export const Timer = ({ route }) => {
   const { top } = useSafeAreaInsets();
 
-  const [time, setTime] = useState(props.time);
+  const [time, setTime] = useState(route.params.time);
   const [isRunning, setIsRunning] = useState(false);
 
   const [sound, setSound] = useState();
@@ -26,6 +26,7 @@ export const Timer = (props) => {
     const { sound } = await Audio.Sound.createAsync(
       require("../../assets/sounds/timer.wav")
     );
+    await sound.setVolumeAsync(route.params.volume / 100.0);
     setSound(sound);
     await sound.playAsync();
   }
@@ -45,7 +46,7 @@ export const Timer = (props) => {
   const resetTimer = () => {
     setIsRunning(false);
     clearInterval(this.interval);
-    setTime(props.time);
+    setTime(route.params.time);
   };
 
   return (
