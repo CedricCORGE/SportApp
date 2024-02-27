@@ -4,13 +4,13 @@ import { createNativeStackNavigator } from "@react-navigation/native-stack";
 
 const Stack = createNativeStackNavigator(); // creates object for Stack Navigator
 
-const FirstScreenNavigator = () => {
+const TimerNavigator = () => {
   return (
-    <Stack.Navigator>
+    <Stack.Navigator screenOptions={{ headerShown: false }}>
       <Stack.Screen name="TimerSetUp" component={TimerSetUp} />
       <Stack.Screen name="Chronometer" component={Timer} />
     </Stack.Navigator>
   );
 };
 
-export { FirstScreenNavigator };
+export { TimerNavigator };

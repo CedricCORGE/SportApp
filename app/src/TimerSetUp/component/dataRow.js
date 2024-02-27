@@ -1,3 +1,4 @@
+import { useEffect, useState } from "react";
 import { View, Text } from "react-native";
 import { IconButton } from "react-native-paper";
 
@@ -41,15 +42,25 @@ export const DataRow = (props) => {
           onPress={props.decrease}
         />
 
-        <Text
+        <View
           style={{
-            marginHorizontal: "7%",
-            fontSize: 20,
-            fontWeight: "bold",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            minWidth: "35%",
           }}
         >
-          {props.data}
-        </Text>
+          <Text
+            style={{
+              marginHorizontal: "7%",
+              fontSize: 20,
+              fontWeight: "bold",
+            }}
+          >
+            {props.data}
+          </Text>
+        </View>
+
         <IconButton
           icon={"plus"}
           size={10}

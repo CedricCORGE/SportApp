@@ -6,9 +6,7 @@ import Ionicons from "react-native-vector-icons/Ionicons";
 
 import { Profile } from "./src/profile/Profile";
 import { Home } from "./src/home/Home";
-import { TimerSetUp } from "./src/TimerSetUp/TimerSetUp";
-import { Timer } from "./src/timer/Timer";
-import { FirstScreenNavigator } from "./src/CustomNavigator/CustomNavigator";
+import { TimerNavigator } from "./src/CustomNavigator/CustomNavigator";
 
 const Tab = createBottomTabNavigator();
 
@@ -47,17 +45,8 @@ export default function App() {
             );
           }}
         />
-        <Tab.Screen name="Timer" component={FirstScreenNavigator} />
+        <Tab.Screen name="Timer" component={TimerNavigator} />
       </Tab.Navigator>
     </NavigationContainer>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: "lightblue",
-    alignItems: "center",
-    justifyContent: "center",
-  },
-});
