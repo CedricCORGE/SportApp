@@ -21,6 +21,7 @@ export const Time = (props) => {
   return (
     <View>
       <View style={[styles.timerContainer]}>
+        <Text>{props.period}</Text>
         <Text style={[styles.timer]}>
           {getMinutes(props.time)}:{getSeconds(props.time)}
         </Text>

@@ -8,7 +8,9 @@ import { Audio } from "expo-av";
 export const Timer = ({ route }) => {
   const { top } = useSafeAreaInsets();
 
-  const [time, setTime] = useState(route.params.time);
+  const [time, setTime] = useState(route.params.work);
+  const [repetitions, setRepetitions] = useState(route.params.repetitions);
+  const [period, setPeriod] = useState("work");
   const [isRunning, setIsRunning] = useState(false);
 
   const [sound, setSound] = useState();
@@ -39,8 +41,16 @@ export const Timer = ({ route }) => {
   };
 
   const stopTimer = () => {
-    setIsRunning(false);
-    clearInterval(this.interval);
+    if ((repetitions > 1 || period === "work") && time === 0) {
+      if (period === "rest") {
+        setRepetitions(repetitions - 1);
+      }
+      setPeriod(period === "work" ? "rest" : "work");
+      setTime(period === "work" ? route.params.rest : route.params.work);
+    } else {
+      setIsRunning(false);
+      clearInterval(this.interval);
+    }
   };
 
   const resetTimer = () => {
@@ -58,7 +68,7 @@ export const Timer = ({ route }) => {
       </View>
 
       <View style={[styles.time]}>
-        <Time time={time} />
+        <Time time={time} period={period} />
       </View>
 
       <View style={[styles.actionButtons]}>

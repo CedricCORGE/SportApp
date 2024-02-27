@@ -51,7 +51,6 @@ export const TimerSetUp = ({ navigation }) => {
   };
 
   const increaseReps = () => {
-    console.log(repetitions);
     if (repetitions < 30) {
       setRepetitions(repetitions + 1);
     }
@@ -95,7 +94,9 @@ export const TimerSetUp = ({ navigation }) => {
 
   const redirect = () => {
     navigation.navigate("Chronometer", {
-      time: work.minutes * 60 + work.seconds,
+      repetitions: repetitions,
+      work: work.minutes * 60 + work.seconds,
+      rest: rest.minutes * 60 + rest.seconds,
       volume: 100,
     });
   };
