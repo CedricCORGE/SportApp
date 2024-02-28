@@ -5,6 +5,8 @@ import { AppService } from './app.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { UserModule } from './user/user.module';
 import { User } from './user/entities/user.entity';
+import { IntervalsModule } from './intervals/intervals.module';
+import { Interval } from './intervals/entities/interval.entity';
 
 @Module({
   imports: [
@@ -15,12 +17,13 @@ import { User } from './user/entities/user.entity';
       port: 3306,
       password: process.env.DB_PASS,
       username: process.env.DB_USER,
-      entities: [User],
+      entities: [User, Interval],
       database: 'SportApp',
       synchronize: true,
       logging: true,
     }),
     UserModule,
+    IntervalsModule,
   ],
   controllers: [AppController],
   providers: [AppService],
