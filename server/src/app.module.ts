@@ -12,13 +12,9 @@ import { Interval } from './intervals/entities/interval.entity';
   imports: [
     ConfigModule.forRoot(),
     TypeOrmModule.forRoot({
-      type: 'mysql',
-      host: process.env.DB_HOST,
-      port: 3306,
-      password: process.env.DB_PASS,
-      username: process.env.DB_USER,
+      type: 'postgres',
+      url: process.env.DATABASE_URL,
       entities: [User, Interval],
-      database: 'SportApp',
       synchronize: true,
       logging: true,
     }),
