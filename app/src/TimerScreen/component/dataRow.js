@@ -1,38 +1,22 @@
 import { useEffect, useState } from "react";
 import { View, Text } from "react-native";
 import { IconButton } from "react-native-paper";
+import { layers, texts } from "../../style/globalStyle";
 
 export const DataRow = (props) => {
   const styles = {
     itemContainer: {
-      display: "flex",
-      flexDirection: "column",
-      justifyContent: "center",
-      alignItems: "center",
       margin: "5%",
     },
     itemActions: {
-      display: "flex",
-      flexDirection: "row",
-      justifyContent: "center",
-      alignItems: "center",
       marginTop: "3%",
-    },
-    button: {
-      display: "flex",
-      justifyContent: "center",
-      alignItems: "center",
-      backgroundColor: "lightgrey",
-      width: "5%",
     },
   };
 
   return (
-    <View style={[styles.itemContainer]}>
-      <Text style={{ textTransform: "uppercase", fontSize: 16 }}>
-        {props.title}
-      </Text>
-      <View style={[styles.itemActions]}>
+    <View style={[layers.container, styles.itemContainer]}>
+      <Text style={[texts.uppercase, texts.s]}>{props.title}</Text>
+      <View style={[layers.row, styles.itemActions]}>
         <IconButton
           icon={"minus"}
           size={10}
@@ -51,11 +35,13 @@ export const DataRow = (props) => {
           }}
         >
           <Text
-            style={{
-              marginHorizontal: "7%",
-              fontSize: 20,
-              fontWeight: "bold",
-            }}
+            style={[
+              texts.l,
+              texts.bold,
+              {
+                marginHorizontal: "7%",
+              },
+            ]}
           >
             {props.data}
           </Text>

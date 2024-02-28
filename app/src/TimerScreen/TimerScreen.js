@@ -1,25 +1,31 @@
-import { Text, TouchableOpacity, View } from "react-native";
+import { ScrollView, Text, TouchableOpacity, View } from "react-native";
 import { useState } from "react";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { DataRow } from "./component/dataRow";
+import { TrainingCard } from "./component/TrainingCard";
+import { buttons, layers, shape, texts } from "../style/globalStyle";
 
-export const TimerSetUp = ({ navigation }) => {
+export const TimerScreen = ({ navigation }) => {
   const { top } = useSafeAreaInsets();
 
   const [repetitions, setRepetitions] = useState(1);
   const [work, setWork] = useState({ minutes: 0, seconds: 30 });
   const [rest, setRest] = useState({ minutes: 0, seconds: 30 });
 
+  const test = async () => {
+    try {
+      const response = await fetch("http://127.0.0.1:3000/intervals");
+      const json = await response.json();
+      console.log(json.movies);
+      return json.movies;
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
   const styles = {
-    background: {
-      backgroundColor: "#EAEAEA",
-      height: "100%",
-    },
-    container: {
+    safeArea: {
       marginTop: top,
-      display: "flex",
-      justifyContent: "center",
-      alignItems: "center",
     },
     startContainer: {
       display: "flex",
@@ -29,18 +35,6 @@ export const TimerSetUp = ({ navigation }) => {
       width: "80%",
       borderRadius: 20,
       marginTop: "5%",
-    },
-    button: {
-      backgroundColor: "#E5EB0E",
-      width: "35%",
-      height: 40,
-      display: "flex",
-      flexDirection: "row",
-      alignItems: "center",
-      justifyContent: "center",
-      borderRadius: 25,
-      margin: 5,
-      marginBottom: "5%",
     },
   };
 
@@ -102,10 +96,10 @@ export const TimerSetUp = ({ navigation }) => {
   };
 
   return (
-    <View style={[styles.background]}>
-      <View style={[styles.container]}>
+    <ScrollView style={[layers.background]}>
+      <View style={[layers.container, styles.safeArea]}>
         <View style={[styles.startContainer]}>
-          <Text style={{ marginTop: "5%", fontSize: 18, fontWeight: "bold" }}>
+          <Text style={[texts.m, texts.bold, { marginTop: "5%" }]}>
             Quick start
           </Text>
 
@@ -140,11 +134,40 @@ export const TimerSetUp = ({ navigation }) => {
             mode="time"
           ></DataRow>
 
-          <TouchableOpacity style={[styles.button]} onPress={redirect}>
-            <Text style={{ fontSize: 18 }}>START</Text>
+          <TouchableOpacity
+            style={[
+              buttons.button,
+              { height: 40, width: "35%", marginBottom: "5%" },
+            ]}
+            onPress={redirect}
+          >
+            <Text style={[texts.m]}>START</Text>
+          </TouchableOpacity>
+        </View>
+        <View style={[shape.line, { width: "70%" }]}></View>
+        <View
+          style={{
+            width: "80%",
+            paddingVertical: "5%",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+          }}
+        >
+          <Text style={[texts.bold, texts.m, { paddingBottom: "5%" }]}>
+            Your training
+          </Text>
+          <TrainingCard
+            name="Interval 1"
+            repetitions={repetitions}
+            work={work}
+            rest={rest}
+          ></TrainingCard>
+          <TouchableOpacity onPress={test}>
+            <Text>Blbla</Text>
           </TouchableOpacity>
         </View>
       </View>
-    </View>
+    </ScrollView>
   );
 };

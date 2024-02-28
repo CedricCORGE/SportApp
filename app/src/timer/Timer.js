@@ -5,6 +5,8 @@ import { useState, useEffect } from "react";
 import { Icon, IconButton } from "react-native-paper";
 import { Audio } from "expo-av";
 
+import { buttons, layers, texts } from "../style/globalStyle";
+
 export const Timer = ({ route }) => {
   const { top } = useSafeAreaInsets();
 
@@ -60,14 +62,14 @@ export const Timer = ({ route }) => {
   };
 
   return (
-    <View style={[styles.timerContainer, { marginTop: top }]}>
+    <View style={[layers.centered, { marginTop: top }]}>
       <View
         style={{ height: "10%", display: "flex", justifyContent: "center" }}
       >
-        <Text style={{ fontSize: 30 }}>Timer</Text>
+        <Text style={[texts.xl]}>Timer</Text>
       </View>
 
-      <View style={[styles.time]}>
+      <View style={[layers.centered, styles.time]}>
         <Time time={time} period={period} />
       </View>
 
@@ -90,12 +92,18 @@ export const Timer = ({ route }) => {
               justifyContent: "center",
             }}
           >
-            <TouchableOpacity style={[styles.button]} onPress={startTimer}>
-              <Text style={[styles.buttonText]}>Start</Text>
+            <TouchableOpacity
+              style={[buttons.button, { width: "35%" }]}
+              onPress={startTimer}
+            >
+              <Text style={[buttons.text]}>Start</Text>
               <Icon source="play" size={20} />
             </TouchableOpacity>
-            <TouchableOpacity style={[styles.button]} onPress={stopTimer}>
-              <Text style={[styles.buttonText]}>Stop</Text>
+            <TouchableOpacity
+              style={[buttons.button, { width: "35%" }]}
+              onPress={stopTimer}
+            >
+              <Text style={[buttons.text]}>Stop</Text>
               <Icon source="stop" size={20} />
             </TouchableOpacity>
           </View>
@@ -107,37 +115,13 @@ export const Timer = ({ route }) => {
 };
 
 const styles = {
-  timerContainer: {
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "center",
-  },
   time: {
     height: "70%",
-    display: "flex",
-    justifyContent: "center",
-    alignItems: "center",
   },
   actionButtons: {
     display: "flex",
     flexDirection: "row",
     color: "black",
     height: "20%",
-  },
-  button: {
-    backgroundColor: "#E5EB0E",
-    width: "35%",
-    display: "flex",
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "center",
-    borderRadius: 25,
-    margin: 5,
-  },
-  buttonText: {
-    paddingRight: 5,
-    textTransform: "uppercase",
-    fontSize: 18,
-    fontWeight: "bold",
   },
 };

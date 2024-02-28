@@ -1,4 +1,5 @@
 import { View, Text } from "react-native";
+import { layers, texts } from "../../style/globalStyle";
 
 const getMinutes = (time) => {
   var minutes = Math.floor(time / 60);
@@ -20,8 +21,8 @@ const getSeconds = (time) => {
 export const Time = (props) => {
   return (
     <View>
-      <View style={[styles.timerContainer]}>
-        <Text>{props.period}</Text>
+      <View style={[layers.centered]}>
+        <Text style={[texts.xl, texts.uppercase]}>{props.period}</Text>
         <Text style={[styles.timer]}>
           {getMinutes(props.time)}:{getSeconds(props.time)}
         </Text>
@@ -31,11 +32,6 @@ export const Time = (props) => {
 };
 
 const styles = {
-  timerContainer: {
-    display: "flex",
-    justifyContent: "center",
-    alignItems: "center",
-  },
   timer: {
     fontSize: 70,
   },
