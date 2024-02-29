@@ -16,7 +16,7 @@ jobs:
           username: ${{ secrets.USERNAME }}
           password: ${{ secrets.PASSWORD }}
           script: |
-            git clone ${{ secrets.REPOSITORY_URL }} SportApp
+            git clone ${{ secrets.REPOSITORY_URL }}
             cd SportApp/server
             touch .env
             echo DATABASE_URL=${{ secrets.DATABASE_URL }} >> .env
