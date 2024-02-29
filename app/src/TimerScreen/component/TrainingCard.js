@@ -1,7 +1,8 @@
 import { Text, TouchableOpacity, View } from "react-native";
-import { Card } from "react-native-paper";
+import { Card, Modal } from "react-native-paper";
 import { buttons, layers, texts } from "../../style/globalStyle";
-import { useEffect, useState } from "react";
+import { useState } from "react";
+import { DataRow } from "./dataRow";
 
 export const TrainingCard = ({ item }) => {
   return (
@@ -34,6 +35,7 @@ export const TrainingCard = ({ item }) => {
                       : item.rest.seconds)}
                 </Text>
               </View>
+
               <View style={[layers.centered]}>
                 <TouchableOpacity
                   style={[buttons.button, { width: "60%", height: 30 }]}
@@ -42,6 +44,9 @@ export const TrainingCard = ({ item }) => {
                 </TouchableOpacity>
                 <TouchableOpacity
                   style={[buttons.button, { width: "60%", height: 30 }]}
+                  onPress={() => {
+                    item.edit(item);
+                  }}
                 >
                   <Text style={[texts.s]}>EDIT</Text>
                 </TouchableOpacity>

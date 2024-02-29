@@ -47,8 +47,20 @@ export const Timer = ({ route }) => {
       if (period === "rest") {
         setRepetitions(repetitions - 1);
       }
-      setPeriod(period === "work" ? "rest" : "work");
-      setTime(period === "work" ? route.params.rest : route.params.work);
+      if (route.params.rest === 0) {
+        if (repetitions === 1) {
+          setIsRunning(false);
+          clearInterval(this.interval);
+          sound.stopAsync();
+          return;
+        }
+        setPeriod("work");
+        setTime(route.params.work);
+        setRepetitions(repetitions - 1);
+      } else {
+        setPeriod(period === "work" ? "rest" : "work");
+        setTime(period === "work" ? route.params.rest : route.params.work);
+      }
     } else {
       setIsRunning(false);
       clearInterval(this.interval);
@@ -56,9 +68,12 @@ export const Timer = ({ route }) => {
   };
 
   const resetTimer = () => {
+    sound.stopAsync();
     setIsRunning(false);
     clearInterval(this.interval);
-    setTime(route.params.time);
+    setTime(route.params.work);
+    setRepetitions(route.params.repetitions);
+    setPeriod("work");
   };
 
   return (
