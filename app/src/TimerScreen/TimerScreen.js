@@ -4,6 +4,7 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { DataRow } from "./component/dataRow";
 import { TrainingCard } from "./component/TrainingCard";
 import { buttons, layers, shape, texts } from "../style/globalStyle";
+import { HttpService } from "../services/HttpService";
 
 export const TimerScreen = ({ navigation }) => {
   const { top } = useSafeAreaInsets();
@@ -14,10 +15,8 @@ export const TimerScreen = ({ navigation }) => {
 
   const test = async () => {
     try {
-      const response = await fetch("http://127.0.0.1:3000/intervals");
-      const json = await response.json();
-      console.log(json.movies);
-      return json.movies;
+      const data = await HttpService.getRequest("intervals");
+      return data;
     } catch (error) {
       console.error(error);
     }
