@@ -1,5 +1,11 @@
-import { ScrollView, Text, TouchableOpacity, View } from "react-native";
-import { useState } from "react";
+import {
+  FlatList,
+  ScrollView,
+  Text,
+  TouchableOpacity,
+  View,
+} from "react-native";
+import { useEffect, useState } from "react";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { DataRow } from "./component/dataRow";
 import { TrainingCard } from "./component/TrainingCard";
@@ -12,15 +18,34 @@ export const TimerScreen = ({ navigation }) => {
   const [repetitions, setRepetitions] = useState(1);
   const [work, setWork] = useState({ minutes: 0, seconds: 30 });
   const [rest, setRest] = useState({ minutes: 0, seconds: 30 });
+  const [intervals, setIntervals] = useState([]);
 
-  const test = async () => {
-    try {
+  useEffect(() => {
+    const fetchData = async () => {
       const data = await HttpService.getRequest("intervals");
-      return data;
-    } catch (error) {
-      console.error(error);
-    }
-  };
+      var intervals = [];
+      for (let i = 0; i < data.length; i++) {
+        intervals.push({
+          name: data[i].name,
+          repetitions: data[i].repetitions,
+          work: {
+            minutes: Math.floor(data[i].work / 60),
+            seconds: data[i].work % 60,
+          },
+          rest: {
+            minutes: Math.floor(data[i].rest / 60),
+            seconds: data[i].rest % 60,
+          },
+        });
+      }
+      setIntervals(intervals);
+    };
+    fetchData();
+  }, []);
+
+  useEffect(() => {
+    console.log(intervals);
+  }, [intervals]);
 
   const styles = {
     safeArea: {
@@ -156,15 +181,12 @@ export const TimerScreen = ({ navigation }) => {
           <Text style={[texts.bold, texts.m, { paddingBottom: "5%" }]}>
             Your training
           </Text>
-          <TrainingCard
-            name="Interval 1"
-            repetitions={repetitions}
-            work={work}
-            rest={rest}
-          ></TrainingCard>
-          <TouchableOpacity onPress={test}>
-            <Text>Blbla</Text>
-          </TouchableOpacity>
+
+          <FlatList
+            scrollEnabled={false}
+            data={intervals}
+            renderItem={TrainingCard}
+          ></FlatList>
         </View>
       </View>
     </ScrollView>
