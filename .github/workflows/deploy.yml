@@ -16,6 +16,7 @@ jobs:
           username: ${{ secrets.USERNAME }}
           password: ${{ secrets.PASSWORD }}
           script: |
+            rm -rf SportApp
             git clone ${{ secrets.REPOSITORY_URL }}
             cd SportApp/server
             touch .env
