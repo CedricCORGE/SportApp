@@ -2,6 +2,7 @@ version: '3.8'
 services:
   postgres:
     image: postgres:latest
+    container_name: sportApp-db
     ports:
       - '5432:5432'
     env_file:
@@ -18,6 +19,7 @@ services:
     build:
       dockerfile: Dockerfile
       context: .
+    container_name: sportApp-server
     depends_on:
       postgres:
         condition: service_healthy
