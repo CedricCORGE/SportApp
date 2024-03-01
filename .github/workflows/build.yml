@@ -46,4 +46,5 @@ jobs:
           npm install
       - name: Build Android Release
         run: |
+          ls
           cd android && ./gradlew assembleRelease
