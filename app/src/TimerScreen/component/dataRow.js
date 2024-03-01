@@ -19,7 +19,7 @@ export const DataRow = (props) => {
       <View style={[layers.row, styles.itemActions]}>
         <IconButton
           icon={"minus"}
-          size={10}
+          size={20}
           mode="outlined"
           iconColor="white"
           containerColor="black"
@@ -49,7 +49,7 @@ export const DataRow = (props) => {
 
         <IconButton
           icon={"plus"}
-          size={10}
+          size={20}
           mode="outlined"
           iconColor="white"
           containerColor="black"

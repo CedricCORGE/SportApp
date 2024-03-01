@@ -1,38 +1,41 @@
 import { Text, TouchableOpacity, View } from "react-native";
-import { Card } from "react-native-paper";
+import { Card, Modal } from "react-native-paper";
 import { buttons, layers, texts } from "../../style/globalStyle";
+import { useState } from "react";
+import { DataRow } from "./dataRow";
 
-export const TrainingCard = (props) => {
+export const TrainingCard = ({ item }) => {
   return (
-    <View>
+    <View style={{ marginBottom: "5%" }}>
       <Card style={[styles.title]}>
         <Card.Content>
           <View>
-            <Text style={[texts.l, texts.bold]}>{props.name}</Text>
+            <Text style={[texts.l, texts.bold]}>{item.name}</Text>
             <View style={[styles.cardContent]}>
               <View style={[styles.trainingData]}>
-                <Text>Repetitions: {props.repetitions}</Text>
+                <Text>Repetitions: {item.repetitions}</Text>
                 <Text>
                   Work:{" "}
-                  {(props.work.minutes < 10
-                    ? "0" + props.work.minutes
-                    : props.work.minutes) +
+                  {(item.work.minutes < 10
+                    ? "0" + item.work.minutes
+                    : item.work.minutes) +
                     ":" +
-                    (props.work.seconds < 10
-                      ? "0" + props.work.seconds
-                      : props.work.seconds)}
+                    (item.work.seconds < 10
+                      ? "0" + item.work.seconds
+                      : item.work.seconds)}
                 </Text>
                 <Text>
                   Rest:{" "}
-                  {(props.rest.minutes < 10
-                    ? "0" + props.rest.minutes
-                    : props.rest.minutes) +
+                  {(item.rest.minutes < 10
+                    ? "0" + item.rest.minutes
+                    : item.rest.minutes) +
                     ":" +
-                    (props.rest.seconds < 10
-                      ? "0" + props.rest.seconds
-                      : props.rest.seconds)}
+                    (item.rest.seconds < 10
+                      ? "0" + item.rest.seconds
+                      : item.rest.seconds)}
                 </Text>
               </View>
+
               <View style={[layers.centered]}>
                 <TouchableOpacity
                   style={[buttons.button, { width: "60%", height: 30 }]}
@@ -41,6 +44,9 @@ export const TrainingCard = (props) => {
                 </TouchableOpacity>
                 <TouchableOpacity
                   style={[buttons.button, { width: "60%", height: 30 }]}
+                  onPress={() => {
+                    item.edit(item);
+                  }}
                 >
                   <Text style={[texts.s]}>EDIT</Text>
                 </TouchableOpacity>
