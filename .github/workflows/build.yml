@@ -17,8 +17,8 @@ jobs:
           sudo apt-get -y install docker-compose
 
       - name: "Create env file"
-        working_directory: ./server
         run: |
+          cd server
           touch .env
           echo DATABASE_URL=${{ secrets.DATABASE_URL }} >> .env
           echo POSTGRES_DB=${{ secrets.POSTGRES_DB }} >> .env
@@ -26,12 +26,16 @@ jobs:
           echo POSTGRES_PASSWORD=${{ secrets.POSTGRES_PASSWORD }} >> .env
 
       - name: "Build and run backend"
-        working-directory: ./server
-        run: docker-compose build && docker-compose up -d
+
+        run: |
+          cd server
+          docker-compose build && docker-compose up -d
 
       - name: "Stop backend"
         working-directory: ./server
-        run: docker-compose stop && docker-compose down
+        run: |
+          cd server
+          docker-compose stop && docker-compose down
 
   build-android:
     runs-on: ubuntu-latest
