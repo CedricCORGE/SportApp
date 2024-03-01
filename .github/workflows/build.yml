@@ -26,7 +26,6 @@ jobs:
           echo POSTGRES_PASSWORD=${{ secrets.POSTGRES_PASSWORD }} >> .env
 
       - name: "Build and run backend"
-
         run: |
           cd server
           docker-compose build && docker-compose up -d
@@ -45,6 +44,4 @@ jobs:
           cd app
           npm install
       - name: Build Android Release
-        run: |
-          ls
-          cd android && ./gradlew assembleRelease
+        run: cd app/android && ./gradlew assembleRelease
