@@ -48,6 +48,11 @@ jobs:
         run: |
           cd app
           npm install
+      - name: Create env file
+        run: |
+          cd app
+          touch .env
+          echo API_URL=${{ secrets.API_URL }} >> .env
       - name: Build Android Release
         run: cd app/android && ./gradlew assembleRelease
 
