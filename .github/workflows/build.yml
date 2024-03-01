@@ -50,3 +50,9 @@ jobs:
           npm install
       - name: Build Android Release
         run: cd app/android && ./gradlew assembleRelease
+
+      - name: "Upload APK"
+        uses: actions/upload-artifact@v2
+        with:
+          name: app-release
+          path: app/android/app/build/outputs/apk/release/app-release.apk
