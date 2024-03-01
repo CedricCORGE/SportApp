@@ -31,4 +31,4 @@ jobs:
         uses: actions/checkout@v2
       - name: "Build android app"
         working-directory: ./app/android
-        run: ./gradlw assembleRelease
+        run: ./gradlew assembleRelease
