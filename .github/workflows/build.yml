@@ -1,9 +1,6 @@
 name: "Build"
 
-on:
-  pull_request:
-    branches:
-      - dev
+on: push
 
 jobs:
   backend-build:
@@ -54,10 +51,10 @@ jobs:
           touch .env
           echo API_URL=${{ secrets.API_URL }} >> .env
       - name: Build Android Release
-        run: cd app/android && ./gradlew assembleRelease
+        run: cd app/android && ./gradlew assembleDebug
 
       - name: "Upload APK"
         uses: actions/upload-artifact@v2
         with:
-          name: app-release
-          path: app/android/app/build/outputs/apk/release/app-release.apk
+          name: app-debug
+          path: app/android/app/build/outputs/apk/debug/app-debug.apk
