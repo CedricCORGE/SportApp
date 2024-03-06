@@ -14,6 +14,7 @@ import {TrainingCard} from './component/TrainingCard';
 import {buttons, layers, shape, texts} from '../style/globalStyle';
 import {HttpService} from '../services/HttpService';
 import {EditModal} from './component/EditModal';
+import {AddModal} from './component/AddModal';
 
 interface Intervals {
   id: number;
@@ -42,6 +43,7 @@ export const TimerScreen = ({navigation}: any) => {
   const [intervals, setIntervals] = useState([] as Intervals[]);
 
   const [modalVisible, setModalVisible] = useState(false);
+  const [addModalVisible, setAddModalVisible] = useState(false);
   const [modalObject, setModalObject] = useState({id: -1} as Intervals);
 
   const openModal = (item: Intervals) => {
@@ -51,6 +53,30 @@ export const TimerScreen = ({navigation}: any) => {
   const hideModal = () => {
     setModalVisible(false);
     setModalObject({id: -1} as Intervals);
+  };
+
+  const openAddModal = () => {
+    setAddModalVisible(true);
+  };
+
+  const hideAddModal = () => {
+    setAddModalVisible(false);
+  };
+
+  const addData = (data: Intervals) => {
+    let body = {
+      name: data.name,
+      repetitions: data.repetitions,
+      work: data.work.minutes * 60 + data.work.seconds,
+      rest: data.rest.minutes * 60 + data.rest.seconds,
+    };
+    HttpService.postRequest('intervals', body).then(async res => {
+      const data = await HttpService.getRequest('intervals');
+      var intervals = updateIntervals(data);
+
+      setIntervals(intervals);
+      hideAddModal();
+    });
   };
 
   const saveData = (data: Intervals, name: string) => {
@@ -321,6 +347,12 @@ export const TimerScreen = ({navigation}: any) => {
           data={modalObject}
           func={functionObj}></EditModal>
       </Modal>
+      <Modal
+        visible={addModalVisible}
+        transparent={true}
+        onDismiss={hideAddModal}>
+        <AddModal addData={addData} closeModal={hideAddModal}></AddModal>
+      </Modal>
       <ScrollView style={[layers.background]}>
         <View style={[layers.container, styles.safeArea]}>
           <View style={[styles.startContainer]}>
@@ -376,9 +408,31 @@ export const TimerScreen = ({navigation}: any) => {
               alignItems: 'center',
               justifyContent: 'center',
             }}>
-            <Text style={[texts.bold, texts.m, {paddingBottom: '5%'}]}>
-              Your training
-            </Text>
+            <View
+              style={[layers.centered, {position: 'relative', width: '100%'}]}>
+              <Text style={[texts.bold, texts.m, {paddingBottom: '5%'}]}>
+                Your training
+              </Text>
+              <View style={{position: 'absolute', right: 0, top: 0}}>
+                <TouchableOpacity
+                  style={[
+                    layers.centered,
+                    {
+                      borderColor: 'grey',
+                      borderStyle: 'solid',
+                      borderWidth: 2,
+                      borderRadius: 50,
+                      width: 30,
+                      height: 30,
+                    },
+                  ]}
+                  onPress={() => {
+                    openAddModal();
+                  }}>
+                  <Text style={[texts.bold, texts.m]}>+</Text>
+                </TouchableOpacity>
+              </View>
+            </View>
 
             <FlatList
               scrollEnabled={false}
