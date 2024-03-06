@@ -37,15 +37,18 @@ export const TrainingCard = ({item}: any) => {
 
               <View style={[layers.centered]}>
                 <TouchableOpacity
-                  style={[buttons.button, {width: '60%', height: 30}]}>
-                  <Text style={[texts.s]}>START</Text>
-                </TouchableOpacity>
-                <TouchableOpacity
                   style={[buttons.button, {width: '60%', height: 30}]}
                   onPress={() => {
                     item.edit(item);
                   }}>
-                  <Text style={[texts.s]}>EDIT</Text>
+                  <Text style={[texts.s, texts.bold]}>EDIT</Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  style={[buttons.button, {width: '60%', height: 30}]}
+                  onPress={() => {
+                    item.start(item);
+                  }}>
+                  <Text style={[texts.s, texts.bold]}>START</Text>
                 </TouchableOpacity>
               </View>
             </View>

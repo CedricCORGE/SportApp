@@ -1,16 +1,58 @@
-import {TouchableOpacity, View} from 'react-native';
+import {TouchableOpacity, View, TextInput} from 'react-native';
 import {DataRow} from './dataRow';
-import {buttons, layers} from '../../style/globalStyle';
+import {buttons, layers, texts} from '../../style/globalStyle';
 import {Text} from 'react-native';
+import {useState} from 'react';
+import {IconButton} from 'react-native-paper';
 
-export const EditModal = ({saveData, data, func}: any) => {
+export const EditModal = ({saveData, closeModal, data, func}: any) => {
+  const [isModified, setIsModified] = useState(false);
+  const [modifiedData, setModifiedData] = useState(data);
+
   return (
     <View
       style={{
         backgroundColor: 'rgba(0,0,0,0.5)',
       }}>
       <View style={[layers.container, {height: '100%'}]}>
-        <View style={[{width: '80%', height: '50%', backgroundColor: 'white'}]}>
+        <View
+          style={[{width: '80%', backgroundColor: 'white', borderRadius: 20}]}>
+          <View
+            style={{
+              position: 'absolute',
+              right: 0,
+              top: 0,
+            }}>
+            <IconButton
+              icon="close"
+              onPress={() => {
+                closeModal(data, modifiedData.name);
+              }}></IconButton>
+          </View>
+          <View style={[layers.row]}>
+            {!isModified && (
+              <Text style={[texts.title, texts.bold]}>{modifiedData.name}</Text>
+            )}
+            {isModified && (
+              <TextInput
+                autoFocus={true}
+                onEndEditing={() => {
+                  setIsModified(false);
+                }}
+                maxLength={20}
+                style={[texts.title, texts.bold, {color: 'grey'}]}
+                onChangeText={text => {
+                  setModifiedData({...modifiedData, name: text});
+                }}
+                value={modifiedData.name}></TextInput>
+            )}
+            <IconButton
+              icon="pencil"
+              onPress={() => {
+                setIsModified(!isModified);
+              }}></IconButton>
+          </View>
+
           <DataRow
             increase={func.increaseReps}
             decrease={func.decreaseReps}
@@ -48,10 +90,10 @@ export const EditModal = ({saveData, data, func}: any) => {
             mode="time"></DataRow>
           <View style={[layers.centered]}>
             <TouchableOpacity
-              style={[buttons.button, {width: '40%', height: 35}]}
+              style={[buttons.button, {width: '40%', height: 35, margin: 30}]}
               onPress={() => {
-                console.log(data);
-                saveData(data);
+                console.log(modifiedData);
+                saveData(data, modifiedData.name);
               }}>
               <Text>SAVE</Text>
             </TouchableOpacity>

@@ -22,6 +22,7 @@ interface Intervals {
   work: {minutes: number; seconds: number};
   rest: {minutes: number; seconds: number};
   edit?: (item: Intervals) => void;
+  start?: (item: Intervals) => void;
 }
 
 interface IntervalsDto {
@@ -52,10 +53,10 @@ export const TimerScreen = ({navigation}: any) => {
     setModalObject({id: -1} as Intervals);
   };
 
-  const saveData = (data: Intervals) => {
+  const saveData = (data: Intervals, name: string) => {
     var test = {
       id: data.id,
-      name: data.name,
+      name: name,
       repetitions: data.repetitions,
       work: data.work.minutes * 60 + data.work.seconds,
       rest: data.rest.minutes * 60 + data.rest.seconds,
@@ -77,6 +78,7 @@ export const TimerScreen = ({navigation}: any) => {
               seconds: res.rest % 60,
             },
             edit: openModal,
+            start: redirect,
           };
           setIntervals([]);
           setIntervals(newIntervals);
@@ -102,6 +104,7 @@ export const TimerScreen = ({navigation}: any) => {
           seconds: data[i].rest % 60,
         },
         edit: openModal,
+        start: redirect,
       });
     }
     return intervals;
@@ -282,13 +285,22 @@ export const TimerScreen = ({navigation}: any) => {
     }
   };
 
-  const redirect = () => {
-    navigation.navigate('Chronometer', {
-      repetitions: repetitions,
-      work: work.minutes * 60 + work.seconds,
-      rest: rest.minutes * 60 + rest.seconds,
-      volume: 0,
-    });
+  const redirect = (data: Intervals | undefined) => {
+    if (data) {
+      navigation.navigate('Chronometer', {
+        repetitions: data.repetitions,
+        work: data.work.minutes * 60 + data.work.seconds,
+        rest: data.rest.minutes * 60 + data.rest.seconds,
+        volume: 0,
+      });
+    } else {
+      navigation.navigate('Chronometer', {
+        repetitions: repetitions,
+        work: work.minutes * 60 + work.seconds,
+        rest: rest.minutes * 60 + rest.seconds,
+        volume: 0,
+      });
+    }
   };
 
   const functionObj = {
@@ -305,6 +317,7 @@ export const TimerScreen = ({navigation}: any) => {
       <Modal visible={modalVisible} transparent={true} onDismiss={hideModal}>
         <EditModal
           saveData={saveData}
+          closeModal={hideModal}
           data={modalObject}
           func={functionObj}></EditModal>
       </Modal>
@@ -348,8 +361,10 @@ export const TimerScreen = ({navigation}: any) => {
                 buttons.button,
                 {height: 40, width: '35%', marginBottom: '5%'},
               ]}
-              onPress={redirect}>
-              <Text style={[texts.m]}>START</Text>
+              onPress={() => {
+                redirect(undefined);
+              }}>
+              <Text style={[texts.m, texts.bold]}>START</Text>
             </TouchableOpacity>
           </View>
           <View style={[shape.line, {width: '70%'}]}></View>
