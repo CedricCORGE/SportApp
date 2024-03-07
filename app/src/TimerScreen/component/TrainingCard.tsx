@@ -1,19 +1,35 @@
 import {StyleSheet, Text, TouchableOpacity, View} from 'react-native';
-import {Card, Modal} from 'react-native-paper';
+import {Card, IconButton, Modal} from 'react-native-paper';
 import {buttons, layers, texts} from '../../style/globalStyle';
 import React from 'react';
+import {HttpService} from '../../services/HttpService';
 
-export const TrainingCard = ({item}: any) => {
+export const TrainingCard = ({item, updateList}: any) => {
+  const deleteCard = () => {
+    console.log(item);
+    HttpService.deleteRequest('intervals/' + item.id).then(response => {
+      updateList();
+    });
+  };
+
   return (
     <View style={{marginBottom: '5%'}}>
       <Card style={[styles.title]}>
+        <IconButton
+          icon="delete-outline"
+          style={{position: 'absolute', right: 0, top: 0}}
+          onPress={() => {
+            deleteCard();
+          }}
+        />
         <Card.Content>
           <View>
             <Text style={[texts.l, texts.bold]}>{item.name}</Text>
             <View style={[styles.cardContent]}>
               <View style={[styles.trainingData]}>
-                <Text>Repetitions: {item.repetitions}</Text>
-                <Text>
+                <Text style={[texts.s]}>Repetitions: {item.repetitions}</Text>
+
+                <Text style={[texts.s]}>
                   Work:{' '}
                   {(item.work.minutes < 10
                     ? '0' + item.work.minutes
@@ -23,7 +39,7 @@ export const TrainingCard = ({item}: any) => {
                       ? '0' + item.work.seconds
                       : item.work.seconds)}
                 </Text>
-                <Text>
+                <Text style={[texts.s]}>
                   Rest:{' '}
                   {(item.rest.minutes < 10
                     ? '0' + item.rest.minutes
@@ -33,6 +49,7 @@ export const TrainingCard = ({item}: any) => {
                       ? '0' + item.rest.seconds
                       : item.rest.seconds)}
                 </Text>
+                <Text style={[texts.s]}>Total: {}</Text>
               </View>
 
               <View style={[layers.centered]}>
@@ -62,7 +79,6 @@ export const TrainingCard = ({item}: any) => {
 const styles = StyleSheet.create({
   title: {
     display: 'flex',
-    justifyContent: 'center',
     alignItems: 'flex-start',
     backgroundColor: 'white',
   },
@@ -76,5 +92,6 @@ const styles = StyleSheet.create({
     width: '100%',
     flexDirection: 'row',
     justifyContent: 'space-between',
+    paddingTop: 10,
   },
 });

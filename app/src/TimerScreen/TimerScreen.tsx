@@ -71,12 +71,16 @@ export const TimerScreen = ({navigation}: any) => {
       rest: data.rest.minutes * 60 + data.rest.seconds,
     };
     HttpService.postRequest('intervals', body).then(async res => {
-      const data = await HttpService.getRequest('intervals');
-      var intervals = updateIntervals(data);
-
-      setIntervals(intervals);
+      getIntervals();
       hideAddModal();
     });
+  };
+
+  const getIntervals = async () => {
+    const data = await HttpService.getRequest('intervals');
+    var intervals = updateIntervals(data);
+
+    setIntervals(intervals);
   };
 
   const saveData = (data: Intervals, name: string) => {
@@ -138,10 +142,7 @@ export const TimerScreen = ({navigation}: any) => {
 
   useEffect(() => {
     const fetchData = async () => {
-      const data = await HttpService.getRequest('intervals');
-      var intervals = updateIntervals(data);
-
-      setIntervals(intervals);
+      getIntervals();
     };
     fetchData();
   }, []);
@@ -434,10 +435,17 @@ export const TimerScreen = ({navigation}: any) => {
               </View>
             </View>
 
-            <FlatList
-              scrollEnabled={false}
-              data={intervals}
-              renderItem={TrainingCard}></FlatList>
+            {intervals.length != 0 && (
+              <FlatList
+                scrollEnabled={false}
+                data={intervals}
+                renderItem={({item}) => (
+                  <TrainingCard item={item} updateList={getIntervals} />
+                )}></FlatList>
+            )}
+            {intervals.length == 0 && (
+              <Text style={[texts.m]}>No training available</Text>
+            )}
           </View>
         </View>
       </ScrollView>
