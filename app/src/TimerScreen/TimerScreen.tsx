@@ -15,6 +15,8 @@ import {buttons, layers, shape, texts} from '../style/globalStyle';
 import {HttpService} from '../services/HttpService';
 import {EditModal} from './component/EditModal';
 import {AddModal} from './component/AddModal';
+import Collapsible from 'react-native-collapsible';
+import {IconButton} from 'react-native-paper';
 
 interface Intervals {
   id: number;
@@ -45,6 +47,8 @@ export const TimerScreen = ({navigation}: any) => {
   const [modalVisible, setModalVisible] = useState(false);
   const [addModalVisible, setAddModalVisible] = useState(false);
   const [modalObject, setModalObject] = useState({id: -1} as Intervals);
+
+  const [isCollapsed, setIsCollapsed] = useState(true);
 
   const openModal = (item: Intervals) => {
     setModalObject(item);
@@ -150,6 +154,7 @@ export const TimerScreen = ({navigation}: any) => {
   const styles = StyleSheet.create({
     safeArea: {
       marginTop: top,
+      height: '100%',
     },
     startContainer: {
       display: 'flex',
@@ -357,49 +362,79 @@ export const TimerScreen = ({navigation}: any) => {
       <ScrollView style={[layers.background]}>
         <View style={[layers.container, styles.safeArea]}>
           <View style={[styles.startContainer]}>
-            <Text style={[texts.m, texts.bold, {marginTop: '5%'}]}>
-              Quick start
-            </Text>
+            <View style={[layers.centered, {width: '100%'}]}>
+              <View
+                style={{
+                  display: 'flex',
+                  width: '100%',
+                  flexDirection: 'row',
+                  justifyContent: 'space-between',
+                  alignItems: 'center',
+                }}>
+                <Text style={[texts.m, texts.bold, {marginHorizontal: '2.5%'}]}>
+                  Quick start
+                </Text>
 
-            <DataRow
-              increase={increaseReps}
-              decrease={decreaseReps}
-              data={repetitions}
-              title="Repetitions"></DataRow>
+                <IconButton
+                  icon={isCollapsed ? 'chevron-down' : 'chevron-up'}
+                  size={30}
+                  onPress={() => {
+                    setIsCollapsed(!isCollapsed);
+                  }}></IconButton>
+              </View>
+            </View>
 
-            <DataRow
-              title="Work"
-              data={
-                (work.minutes < 10 ? '0' + work.minutes : work.minutes) +
-                ':' +
-                (work.seconds < 10 ? '0' + work.seconds : work.seconds)
-              }
-              increase={increaseWork}
-              decrease={decreaseWork}
-              mode="time"></DataRow>
+            <Collapsible
+              style={{
+                width: '100%',
+                display: 'flex',
+                justifyContent: 'center',
+                alignItems: 'center',
+              }}
+              collapsed={isCollapsed}>
+              <DataRow
+                increase={increaseReps}
+                decrease={decreaseReps}
+                data={repetitions}
+                title="Repetitions"></DataRow>
 
-            <DataRow
-              title="Rest"
-              data={
-                (rest.minutes < 10 ? '0' + rest.minutes : rest.minutes) +
-                ':' +
-                (rest.seconds < 10 ? '0' + rest.seconds : rest.seconds)
-              }
-              increase={increaseRest}
-              decrease={decreaseRest}
-              mode="time"></DataRow>
+              <DataRow
+                title="Work"
+                data={
+                  (work.minutes < 10 ? '0' + work.minutes : work.minutes) +
+                  ':' +
+                  (work.seconds < 10 ? '0' + work.seconds : work.seconds)
+                }
+                increase={increaseWork}
+                decrease={decreaseWork}
+                mode="time"></DataRow>
 
-            <TouchableOpacity
-              style={[
-                buttons.button,
-                {height: 40, width: '35%', marginBottom: '5%'},
-              ]}
-              onPress={() => {
-                redirect(undefined);
-              }}>
-              <Text style={[texts.m, texts.bold]}>START</Text>
-            </TouchableOpacity>
+              <DataRow
+                title="Rest"
+                data={
+                  (rest.minutes < 10 ? '0' + rest.minutes : rest.minutes) +
+                  ':' +
+                  (rest.seconds < 10 ? '0' + rest.seconds : rest.seconds)
+                }
+                increase={increaseRest}
+                decrease={decreaseRest}
+                mode="time"></DataRow>
+
+              <TouchableOpacity
+                style={[
+                  buttons.button,
+                  {height: 40, width: '35%', marginBottom: '5%'},
+                ]}
+                onPress={() => {
+                  redirect(undefined);
+                }}>
+                <View style={[layers.centered, {width: '100%'}]}>
+                  <Text style={[texts.m, texts.bold]}>START</Text>
+                </View>
+              </TouchableOpacity>
+            </Collapsible>
           </View>
+
           <View style={[shape.line, {width: '70%'}]}></View>
           <View
             style={{
