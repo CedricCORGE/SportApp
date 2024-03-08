@@ -14,6 +14,9 @@ import {TrainingCard} from './component/TrainingCard';
 import {buttons, layers, shape, texts} from '../style/globalStyle';
 import {HttpService} from '../services/HttpService';
 import {EditModal} from './component/EditModal';
+import {AddModal} from './component/AddModal';
+import Collapsible from 'react-native-collapsible';
+import {IconButton} from 'react-native-paper';
 
 interface Intervals {
   id: number;
@@ -22,6 +25,7 @@ interface Intervals {
   work: {minutes: number; seconds: number};
   rest: {minutes: number; seconds: number};
   edit?: (item: Intervals) => void;
+  start?: (item: Intervals) => void;
 }
 
 interface IntervalsDto {
@@ -41,7 +45,10 @@ export const TimerScreen = ({navigation}: any) => {
   const [intervals, setIntervals] = useState([] as Intervals[]);
 
   const [modalVisible, setModalVisible] = useState(false);
+  const [addModalVisible, setAddModalVisible] = useState(false);
   const [modalObject, setModalObject] = useState({id: -1} as Intervals);
+
+  const [isCollapsed, setIsCollapsed] = useState(false);
 
   const openModal = (item: Intervals) => {
     setModalObject(item);
@@ -52,10 +59,38 @@ export const TimerScreen = ({navigation}: any) => {
     setModalObject({id: -1} as Intervals);
   };
 
-  const saveData = (data: Intervals) => {
+  const openAddModal = () => {
+    setAddModalVisible(true);
+  };
+
+  const hideAddModal = () => {
+    setAddModalVisible(false);
+  };
+
+  const addData = (data: Intervals) => {
+    let body = {
+      name: data.name,
+      repetitions: data.repetitions,
+      work: data.work.minutes * 60 + data.work.seconds,
+      rest: data.rest.minutes * 60 + data.rest.seconds,
+    };
+    HttpService.postRequest('intervals', body).then(async res => {
+      getIntervals();
+      hideAddModal();
+    });
+  };
+
+  const getIntervals = async () => {
+    const data = await HttpService.getRequest('intervals');
+    var intervals = updateIntervals(data);
+
+    setIntervals(intervals);
+  };
+
+  const saveData = (data: Intervals, name: string) => {
     var test = {
       id: data.id,
-      name: data.name,
+      name: name,
       repetitions: data.repetitions,
       work: data.work.minutes * 60 + data.work.seconds,
       rest: data.rest.minutes * 60 + data.rest.seconds,
@@ -77,6 +112,7 @@ export const TimerScreen = ({navigation}: any) => {
               seconds: res.rest % 60,
             },
             edit: openModal,
+            start: redirect,
           };
           setIntervals([]);
           setIntervals(newIntervals);
@@ -102,6 +138,7 @@ export const TimerScreen = ({navigation}: any) => {
           seconds: data[i].rest % 60,
         },
         edit: openModal,
+        start: redirect,
       });
     }
     return intervals;
@@ -109,10 +146,7 @@ export const TimerScreen = ({navigation}: any) => {
 
   useEffect(() => {
     const fetchData = async () => {
-      const data = await HttpService.getRequest('intervals');
-      var intervals = updateIntervals(data);
-
-      setIntervals(intervals);
+      getIntervals();
     };
     fetchData();
   }, []);
@@ -120,6 +154,7 @@ export const TimerScreen = ({navigation}: any) => {
   const styles = StyleSheet.create({
     safeArea: {
       marginTop: top,
+      height: '100%',
     },
     startContainer: {
       display: 'flex',
@@ -282,13 +317,22 @@ export const TimerScreen = ({navigation}: any) => {
     }
   };
 
-  const redirect = () => {
-    navigation.navigate('Chronometer', {
-      repetitions: repetitions,
-      work: work.minutes * 60 + work.seconds,
-      rest: rest.minutes * 60 + rest.seconds,
-      volume: 0,
-    });
+  const redirect = (data: Intervals | undefined) => {
+    if (data) {
+      navigation.navigate('Chronometer', {
+        repetitions: data.repetitions,
+        work: data.work.minutes * 60 + data.work.seconds,
+        rest: data.rest.minutes * 60 + data.rest.seconds,
+        volume: 0,
+      });
+    } else {
+      navigation.navigate('Chronometer', {
+        repetitions: repetitions,
+        work: work.minutes * 60 + work.seconds,
+        rest: rest.minutes * 60 + rest.seconds,
+        volume: 0,
+      });
+    }
   };
 
   const functionObj = {
@@ -305,53 +349,92 @@ export const TimerScreen = ({navigation}: any) => {
       <Modal visible={modalVisible} transparent={true} onDismiss={hideModal}>
         <EditModal
           saveData={saveData}
+          closeModal={hideModal}
           data={modalObject}
           func={functionObj}></EditModal>
+      </Modal>
+      <Modal
+        visible={addModalVisible}
+        transparent={true}
+        onDismiss={hideAddModal}>
+        <AddModal addData={addData} closeModal={hideAddModal}></AddModal>
       </Modal>
       <ScrollView style={[layers.background]}>
         <View style={[layers.container, styles.safeArea]}>
           <View style={[styles.startContainer]}>
-            <Text style={[texts.m, texts.bold, {marginTop: '5%'}]}>
-              Quick start
-            </Text>
+            <View style={[layers.centered, {width: '100%'}]}>
+              <View
+                style={{
+                  display: 'flex',
+                  width: '100%',
+                  flexDirection: 'row',
+                  justifyContent: 'space-between',
+                  alignItems: 'center',
+                }}>
+                <Text style={[texts.m, texts.bold, {marginHorizontal: '2.5%'}]}>
+                  Quick start
+                </Text>
 
-            <DataRow
-              increase={increaseReps}
-              decrease={decreaseReps}
-              data={repetitions}
-              title="Repetitions"></DataRow>
+                <IconButton
+                  icon={isCollapsed ? 'chevron-down' : 'chevron-up'}
+                  size={30}
+                  onPress={() => {
+                    setIsCollapsed(!isCollapsed);
+                  }}></IconButton>
+              </View>
+            </View>
 
-            <DataRow
-              title="Work"
-              data={
-                (work.minutes < 10 ? '0' + work.minutes : work.minutes) +
-                ':' +
-                (work.seconds < 10 ? '0' + work.seconds : work.seconds)
-              }
-              increase={increaseWork}
-              decrease={decreaseWork}
-              mode="time"></DataRow>
+            <Collapsible
+              style={{
+                width: '100%',
+                display: 'flex',
+                justifyContent: 'center',
+                alignItems: 'center',
+              }}
+              collapsed={isCollapsed}>
+              <DataRow
+                increase={increaseReps}
+                decrease={decreaseReps}
+                data={repetitions}
+                title="Repetitions"></DataRow>
 
-            <DataRow
-              title="Rest"
-              data={
-                (rest.minutes < 10 ? '0' + rest.minutes : rest.minutes) +
-                ':' +
-                (rest.seconds < 10 ? '0' + rest.seconds : rest.seconds)
-              }
-              increase={increaseRest}
-              decrease={decreaseRest}
-              mode="time"></DataRow>
+              <DataRow
+                title="Work"
+                data={
+                  (work.minutes < 10 ? '0' + work.minutes : work.minutes) +
+                  ':' +
+                  (work.seconds < 10 ? '0' + work.seconds : work.seconds)
+                }
+                increase={increaseWork}
+                decrease={decreaseWork}
+                mode="time"></DataRow>
 
-            <TouchableOpacity
-              style={[
-                buttons.button,
-                {height: 40, width: '35%', marginBottom: '5%'},
-              ]}
-              onPress={redirect}>
-              <Text style={[texts.m]}>START</Text>
-            </TouchableOpacity>
+              <DataRow
+                title="Rest"
+                data={
+                  (rest.minutes < 10 ? '0' + rest.minutes : rest.minutes) +
+                  ':' +
+                  (rest.seconds < 10 ? '0' + rest.seconds : rest.seconds)
+                }
+                increase={increaseRest}
+                decrease={decreaseRest}
+                mode="time"></DataRow>
+
+              <TouchableOpacity
+                style={[
+                  buttons.button,
+                  {height: 40, width: '35%', marginBottom: '5%'},
+                ]}
+                onPress={() => {
+                  redirect(undefined);
+                }}>
+                <View style={[layers.centered, {width: '100%'}]}>
+                  <Text style={[texts.m, texts.bold]}>START</Text>
+                </View>
+              </TouchableOpacity>
+            </Collapsible>
           </View>
+
           <View style={[shape.line, {width: '70%'}]}></View>
           <View
             style={{
@@ -361,14 +444,43 @@ export const TimerScreen = ({navigation}: any) => {
               alignItems: 'center',
               justifyContent: 'center',
             }}>
-            <Text style={[texts.bold, texts.m, {paddingBottom: '5%'}]}>
-              Your training
-            </Text>
+            <View
+              style={[layers.centered, {position: 'relative', width: '100%'}]}>
+              <Text style={[texts.bold, texts.m, {paddingBottom: '5%'}]}>
+                Your training
+              </Text>
+              <View style={{position: 'absolute', right: 0, top: 0}}>
+                <TouchableOpacity
+                  style={[
+                    layers.centered,
+                    {
+                      borderColor: 'grey',
+                      borderStyle: 'solid',
+                      borderWidth: 2,
+                      borderRadius: 50,
+                      width: 30,
+                      height: 30,
+                    },
+                  ]}
+                  onPress={() => {
+                    openAddModal();
+                  }}>
+                  <Text style={[texts.bold, texts.m]}>+</Text>
+                </TouchableOpacity>
+              </View>
+            </View>
 
-            <FlatList
-              scrollEnabled={false}
-              data={intervals}
-              renderItem={TrainingCard}></FlatList>
+            {intervals.length != 0 && (
+              <FlatList
+                scrollEnabled={false}
+                data={intervals}
+                renderItem={({item}) => (
+                  <TrainingCard item={item} updateList={getIntervals} />
+                )}></FlatList>
+            )}
+            {intervals.length == 0 && (
+              <Text style={[texts.m]}>No training available</Text>
+            )}
           </View>
         </View>
       </ScrollView>
