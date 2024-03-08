@@ -17,14 +17,8 @@ import {
   View,
 } from 'react-native';
 
-import {
-  Colors,
-  DebugInstructions,
-  Header,
-  LearnMoreLinks,
-  ReloadInstructions,
-} from 'react-native/Libraries/NewAppScreen';
-import {Home} from './src/Home';
+import {Colors} from 'react-native/Libraries/NewAppScreen';
+import {Activity} from './src/Activity';
 
 import {NavigationContainer} from '@react-navigation/native';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
@@ -87,8 +81,10 @@ function App(): React.JSX.Element {
 
             if (route.name === 'Profile') {
               iconName = focused ? 'person' : 'person-outline';
-            } else if (route.name === 'Home') {
-              iconName = focused ? 'home' : 'home-outline';
+            } else if (route.name === 'Activity') {
+              iconName = focused
+                ? 'calendar-number'
+                : 'calendar-number-outline';
             } else if (route.name === 'Timer') {
               iconName = focused ? 'timer' : 'timer-outline';
             }
@@ -96,7 +92,7 @@ function App(): React.JSX.Element {
             return <Ionicons name={iconName} size={size} color={color} />;
           },
         })}>
-        <Tab.Screen name="Home" component={Home} />
+        <Tab.Screen name="Activity" component={Activity} />
         <Tab.Screen
           name="Profile"
           children={() => {
