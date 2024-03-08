@@ -13,6 +13,9 @@ export const texts = StyleSheet.create({
   xl: {
     fontSize: 30,
   },
+  title: {
+    fontSize: 25,
+  },
   bold: {
     fontWeight: 'bold',
   },

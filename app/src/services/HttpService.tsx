@@ -3,7 +3,8 @@ import {API_URL} from '@env';
 export const HttpService = {
   getRequest: async (url: string) => {
     const response = await fetch(API_URL + url);
-    return await response.json();
+    const data = await response.json();
+    return data;
   },
   postRequest: async (url: string, data: {}) => {
     const response = await fetch(API_URL + url, {
