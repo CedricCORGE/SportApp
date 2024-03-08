@@ -12,6 +12,21 @@ export const TrainingCard = ({item, updateList}: any) => {
     });
   };
 
+  const totalTime = (item: any) => {
+    let seconds = (item.work.seconds + item.rest.seconds) * item.repetitions;
+    let minutes = (item.work.minutes + item.rest.minutes) * item.repetitions;
+
+    while (seconds >= 60) {
+      minutes++;
+      seconds -= 60;
+    }
+
+    let secondsTotal = seconds < 10 ? '0' + seconds : seconds;
+    let minutesTotal = minutes < 10 ? '0' + minutes : minutes;
+
+    return minutesTotal + ':' + secondsTotal;
+  };
+
   return (
     <View style={{marginBottom: '5%'}}>
       <Card style={[styles.title]}>
@@ -49,7 +64,7 @@ export const TrainingCard = ({item, updateList}: any) => {
                       ? '0' + item.rest.seconds
                       : item.rest.seconds)}
                 </Text>
-                <Text style={[texts.s]}>Total: {}</Text>
+                <Text style={[texts.s]}>Total: {totalTime(item)}</Text>
               </View>
 
               <View style={[layers.centered]}>

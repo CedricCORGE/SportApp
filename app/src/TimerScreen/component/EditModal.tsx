@@ -2,12 +2,25 @@ import {TouchableOpacity, View, TextInput} from 'react-native';
 import {DataRow} from './dataRow';
 import {buttons, layers, texts} from '../../style/globalStyle';
 import {Text} from 'react-native';
-import {useState} from 'react';
+import {useEffect, useState} from 'react';
 import {IconButton} from 'react-native-paper';
 
 export const EditModal = ({saveData, closeModal, data, func}: any) => {
   const [isModified, setIsModified] = useState(false);
   const [modifiedData, setModifiedData] = useState(data);
+  const [isValid, setIsValid] = useState(true);
+
+  useEffect(() => {
+    validateData();
+  }, [modifiedData]);
+
+  const validateData = () => {
+    if (modifiedData.name != '') {
+      setIsValid(true);
+    } else {
+      setIsValid(false);
+    }
+  };
 
   return (
     <View
@@ -92,8 +105,10 @@ export const EditModal = ({saveData, closeModal, data, func}: any) => {
             <TouchableOpacity
               style={[buttons.button, {width: '40%', height: 35, margin: 30}]}
               onPress={() => {
-                console.log(modifiedData);
-                saveData(data, modifiedData.name);
+                if (isValid) {
+                  console.log(modifiedData);
+                  saveData(data, modifiedData.name);
+                }
               }}>
               <Text>SAVE</Text>
             </TouchableOpacity>

@@ -2,16 +2,29 @@ import {TouchableOpacity, View, TextInput} from 'react-native';
 import {DataRow} from './dataRow';
 import {buttons, layers, texts} from '../../style/globalStyle';
 import {Text} from 'react-native';
-import {useState} from 'react';
+import {useEffect, useState} from 'react';
 import {IconButton} from 'react-native-paper';
 
 export const AddModal = ({addData, closeModal}: any) => {
+  const [isValid, setIsValid] = useState(false);
   const [data, setData] = useState({
     name: '',
     repetitions: 1,
     work: {minutes: 0, seconds: 30},
     rest: {minutes: 0, seconds: 30},
   });
+
+  useEffect(() => {
+    validateName();
+  }, [data]);
+
+  const validateName = () => {
+    if (data.name != '') {
+      setIsValid(true);
+    } else {
+      setIsValid(false);
+    }
+  };
 
   const decreaseReps = () => {
     if (data.repetitions > 1) {
@@ -161,7 +174,9 @@ export const AddModal = ({addData, closeModal}: any) => {
             <TouchableOpacity
               style={[buttons.button, {width: '40%', height: 35, margin: 30}]}
               onPress={() => {
-                addData(data);
+                if (isValid) {
+                  addData(data);
+                }
               }}>
               <Text>SAVE</Text>
             </TouchableOpacity>
