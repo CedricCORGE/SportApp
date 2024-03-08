@@ -48,7 +48,7 @@ export const TimerScreen = ({navigation}: any) => {
   const [addModalVisible, setAddModalVisible] = useState(false);
   const [modalObject, setModalObject] = useState({id: -1} as Intervals);
 
-  const [isCollapsed, setIsCollapsed] = useState(true);
+  const [isCollapsed, setIsCollapsed] = useState(false);
 
   const openModal = (item: Intervals) => {
     setModalObject(item);
