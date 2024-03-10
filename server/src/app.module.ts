@@ -7,6 +7,8 @@ import { UserModule } from './user/user.module';
 import { User } from './user/entities/user.entity';
 import { IntervalsModule } from './intervals/intervals.module';
 import { Interval } from './intervals/entities/interval.entity';
+import { ActivityModule } from './activity/activity.module';
+import { Activity } from './activity/entities/activity.entity';
 
 @Module({
   imports: [
@@ -14,12 +16,13 @@ import { Interval } from './intervals/entities/interval.entity';
     TypeOrmModule.forRoot({
       type: 'postgres',
       url: process.env.DATABASE_URL,
-      entities: [User, Interval],
+      entities: [User, Interval, Activity],
       synchronize: true,
       logging: true,
     }),
     UserModule,
     IntervalsModule,
+    ActivityModule,
   ],
   controllers: [AppController],
   providers: [AppService],
