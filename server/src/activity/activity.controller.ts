@@ -1,4 +1,12 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+} from '@nestjs/common';
 import { ActivityService } from './activity.service';
 import { CreateActivityDto } from './dto/create-activity.dto';
 import { UpdateActivityDto } from './dto/update-activity.dto';
@@ -17,13 +25,34 @@ export class ActivityController {
     return this.activityService.findAll();
   }
 
+  @Get('sortedByDate')
+  async getActivitiesByDate() {
+    let activities = await this.activityService.findAll();
+    let sortedActivities = {};
+
+    activities.forEach((activity) => {
+      if (!sortedActivities[activity.date.toISOString()]) {
+        sortedActivities[activity.date.toISOString()] = {
+          activities: [],
+        };
+      }
+
+      sortedActivities[activity.date.toISOString()].activities.push(activity);
+    });
+
+    return sortedActivities;
+  }
+
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.activityService.findOne(+id);
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateActivityDto: UpdateActivityDto) {
+  update(
+    @Param('id') id: string,
+    @Body() updateActivityDto: UpdateActivityDto,
+  ) {
     return this.activityService.update(+id, updateActivityDto);
   }
 

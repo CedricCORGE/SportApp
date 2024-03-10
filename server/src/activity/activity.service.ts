@@ -29,6 +29,10 @@ export class ActivityService {
     return this.activityRepository.findBy({ id });
   }
 
+  getActivitiesByDate() {
+    return this.activityRepository.find();
+  }
+
   update(id: number, updateActivityDto: UpdateActivityDto) {
     let newActivity = new Activity();
     newActivity.name = updateActivityDto.name;
