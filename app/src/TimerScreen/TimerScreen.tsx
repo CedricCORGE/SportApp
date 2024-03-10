@@ -359,8 +359,8 @@ export const TimerScreen = ({navigation}: any) => {
         onDismiss={hideAddModal}>
         <AddModal addData={addData} closeModal={hideAddModal}></AddModal>
       </Modal>
-      <ScrollView style={[layers.background]}>
-        <View style={[layers.container, styles.safeArea]}>
+      <ScrollView>
+        <View style={[layers.container]}>
           <View style={[styles.startContainer]}>
             <View style={[layers.centered, {width: '100%'}]}>
               <View

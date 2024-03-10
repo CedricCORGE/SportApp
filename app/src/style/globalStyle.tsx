@@ -72,4 +72,8 @@ export const shape = StyleSheet.create({
     backgroundColor: 'black',
     marginTop: '5%',
   },
+  verticalLine: {
+    width: 1,
+    backgroundColor: 'black',
+  },
 });
