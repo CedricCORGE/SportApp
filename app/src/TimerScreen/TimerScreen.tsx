@@ -28,7 +28,7 @@ interface Intervals {
   start?: (item: Intervals) => void;
 }
 
-interface IntervalsDto {
+export interface IntervalsDto {
   id: number;
   name: string;
   repetitions: number;
