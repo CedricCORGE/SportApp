@@ -1,4 +1,10 @@
-import { IsDate, IsNotEmpty, IsNumber, IsString } from 'class-validator';
+import {
+  IsDate,
+  IsEnum,
+  IsNotEmpty,
+  IsNumber,
+  IsString,
+} from 'class-validator';
 import { Interval } from 'src/intervals/entities/interval.entity';
 
 export class CreateActivityDto {
@@ -11,6 +17,10 @@ export class CreateActivityDto {
 
   @IsNumber()
   duration: number;
+
+  @IsEnum(['running', 'cycling', 'swimming', 'lifting', 'interval'])
+  @IsNotEmpty()
+  type: string;
 
   interval: Interval;
 }

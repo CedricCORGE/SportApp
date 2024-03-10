@@ -22,6 +22,13 @@ export class Activity {
   @Column()
   duration: number;
 
+  @Column({
+    type: 'enum',
+    enum: ['running', 'cycling', 'swimming', 'lifting', 'interval'],
+    default: 'running',
+  })
+  type: string;
+
   @ManyToOne(() => Interval, { eager: true })
   @JoinColumn()
   interval: Interval;
