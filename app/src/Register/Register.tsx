@@ -5,10 +5,12 @@ import {
   TextInput,
   TouchableOpacity,
   ScrollView,
+  Modal,
 } from 'react-native';
 import {buttons, layers, shape, texts} from '../style/globalStyle';
 import {useEffect, useState} from 'react';
 import {HttpService} from '../services/HttpService';
+import {ErrorModal} from '../ErrorModal/ErrorModal';
 
 export const Register = ({navigation}: any) => {
   const [mail, onChangeMail] = useState('');
@@ -16,13 +18,24 @@ export const Register = ({navigation}: any) => {
   const [password, onChangePassword] = useState('');
   const [confirmPassword, onChangeConfirmPassword] = useState('');
 
+  const [error, setError] = useState(false);
+
+  const onModalClose = () => {
+    setError(false);
+  };
+
   const onRegister = () => {
     HttpService.postRequest('user', {
       email: mail,
       pseudo: pseudo,
       password: password,
     }).then((response: any) => {
-      console.log(response);
+      if (response.statusCode === 201) {
+        console.log(response);
+      } else {
+        console.log(response.error);
+        setError(true);
+      }
     });
   };
 
@@ -32,6 +45,7 @@ export const Register = ({navigation}: any) => {
 
   return (
     <ScrollView contentContainerStyle={{flexGrow: 1}}>
+      <ErrorModal display={error} onClose={onModalClose} />
       <View style={[layers.container, {height: '100%'}]}>
         <View style={[styles.registerContainer]}>
           <View style={{padding: '5%'}}>

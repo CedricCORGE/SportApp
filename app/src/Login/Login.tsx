@@ -10,12 +10,19 @@ import {user} from '../User';
 import {buttons, layers, shape, texts} from '../style/globalStyle';
 import {useState} from 'react';
 import {HttpService} from '../services/HttpService';
+import {ErrorModal} from '../ErrorModal/ErrorModal';
 
 export const Login = ({navigation}: any) => {
   const client = user;
 
   const [mail, onChangeMail] = useState('');
   const [password, onChangePassword] = useState('');
+
+  const [error, setError] = useState(false);
+
+  const onModalClose = () => {
+    setError(false);
+  };
 
   const onLogin = () => {
     HttpService.postRequest('user/login', {
@@ -25,6 +32,8 @@ export const Login = ({navigation}: any) => {
       if (response.statusCode === 200) {
         client.setIsLogged(true);
         navigation.navigate('Root', {screen: 'Home', initial: false});
+      } else {
+        setError(true);
       }
     });
   };
@@ -35,6 +44,7 @@ export const Login = ({navigation}: any) => {
 
   return (
     <View style={[layers.container, layers.centered, {height: '100%'}]}>
+      <ErrorModal display={error} onClose={onModalClose} />
       <View style={[styles.loginContainer]}>
         <View>
           <Text style={[texts.bold, texts.uppercase, texts.l]}>Login</Text>
