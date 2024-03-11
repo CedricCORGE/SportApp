@@ -1,6 +1,6 @@
 import {Text, View, FlatList, ScrollView, SafeAreaView} from 'react-native';
 import {Calendar, CalendarUtils} from 'react-native-calendars';
-import {format} from 'date-fns';
+import {format, set} from 'date-fns';
 import {useState, useMemo, useEffect} from 'react';
 import React from 'react';
 import {HttpService} from '../services/HttpService';
@@ -14,15 +14,25 @@ interface Activity {
   date: string;
   name: string;
   duration: number;
+  type: string;
   interval: IntervalsDto;
 }
 
+const ACTIVITY = [
+  {key: 'running', color: 'red', selectedDotColor: 'red'},
+  {key: 'lifting', color: 'green', selectedDotColor: 'green'},
+  {key: 'cycling', color: 'blue', selectedDotColor: 'blue'},
+  {key: 'swimming', color: 'yellow', selectedDotColor: 'yellow'},
+  {key: 'interval', color: 'orange', selectedDotColor: 'orange'},
+];
+
 export const Activity = () => {
   const [selectedDate, setSelectedDate] = useState('');
-  const [activities, setActivities] = useState([] as Activity[]);
+  const [activities, setActivities] = useState([]);
+  const [activitiesArray, setActivitiesArray] = useState([] as Activity[]);
 
   useEffect(() => {
-    HttpService.getRequest('activity').then((response: any) => {
+    HttpService.getRequest('activity/sortedByDate').then((response: any) => {
       console.log(response);
       setActivities(response);
     });
@@ -30,16 +40,35 @@ export const Activity = () => {
 
   const marked = useMemo(() => {
     let tmp = {};
+    let isActivitySelected = false;
+    let actiArray: Activity[] = [];
 
-    activities.forEach(activity => {
-      if (format(activity.date, 'yyyy-MM-dd') === selectedDate) {
+    Object.keys(activities).forEach((key: string) => {
+      let dots: any = [];
+
+      for (const index in Object.keys(activities[key]['activities'])) {
+        let acti = activities[key]['activities'][index];
+
+        if (acti.type === 'running') {
+          dots.push(ACTIVITY[0]);
+        } else if (acti.type === 'lifting') {
+          dots.push(ACTIVITY[1]);
+        } else if (acti.type === 'cycling') {
+          dots.push(ACTIVITY[2]);
+        } else if (acti.type === 'swimming') {
+          dots.push(ACTIVITY[3]);
+        } else if (acti.type === 'interval') {
+          dots.push(ACTIVITY[4]);
+        }
+        actiArray.push(acti);
+      }
+
+      if (format(key, 'yyyy-MM-dd') === selectedDate) {
+        isActivitySelected = true;
         tmp = {
           ...tmp,
-          [format(activity.date, 'yyyy-MM-dd')]: {
-            dots: [
-              {key: 'running', color: 'red', selectedDotColor: 'red'},
-              {key: 'lifting', color: 'red', selectedDotColor: 'red'},
-            ],
+          [format(key, 'yyyy-MM-dd')]: {
+            dots: dots,
             selected: true,
             selectedColor: 'lightblue',
             selectedTextColor: 'black',
@@ -49,24 +78,25 @@ export const Activity = () => {
       } else {
         tmp = {
           ...tmp,
-          [format(activity.date, 'yyyy-MM-dd')]: {
-            dots: [
-              {key: 'running', color: 'red', selectedDotColor: 'red'},
-              {key: 'lifting', color: 'red', selectedDotColor: 'red'},
-            ],
+          [format(key, 'yyyy-MM-dd')]: {
+            dots: dots,
           },
         };
-        tmp = {
-          ...tmp,
-          [selectedDate]: {
-            selected: true,
-            selectedColor: 'lightblue',
-            selectedTextColor: 'black',
-            disableTouchEvent: true,
-          },
-        };
+        if (isActivitySelected == false) {
+          tmp = {
+            ...tmp,
+            [selectedDate]: {
+              selected: true,
+              selectedColor: 'lightblue',
+              selectedTextColor: 'black',
+              disableTouchEvent: true,
+            },
+          };
+        }
       }
     });
+
+    setActivitiesArray(actiArray);
 
     return {
       ...tmp,
@@ -93,11 +123,19 @@ export const Activity = () => {
         </View>
         <View style={[shape.line, layers.centered, {width: '80%'}]}></View>
 
-        <Text style={[texts.title, texts.bold, texts.uppercase]}>Activity</Text>
+        <Text
+          style={[
+            texts.title,
+            texts.bold,
+            texts.uppercase,
+            {paddingTop: '2%'},
+          ]}>
+          Activity
+        </Text>
         {activities.length != 0 && (
           <FlatList
             scrollEnabled={false}
-            data={activities}
+            data={activitiesArray}
             renderItem={({item}) => (
               <ActivityCard activity={item} />
             )}></FlatList>
