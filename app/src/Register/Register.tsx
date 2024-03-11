@@ -42,12 +42,14 @@ export const Register = ({navigation}: any) => {
           <TextInput
             style={[styles.input]}
             value={password}
+            secureTextEntry={true}
             onChangeText={onChangePassword}
             placeholder="Enter your password"
           />
           <TextInput
             style={[styles.input]}
             value={confirmPassword}
+            secureTextEntry={true}
             onChangeText={onChangeConfirmPassword}
             placeholder="Confirm your password"
           />

@@ -41,6 +41,7 @@ export const Login = ({navigation}: any) => {
             style={styles.input}
             onChangeText={onChangePassword}
             value={password}
+            secureTextEntry={true}
             placeholder="Enter your password"></TextInput>
         </View>
         <View style={[layers.centered, {width: '100%'}]}>
