@@ -60,7 +60,7 @@ export const Register = ({navigation}: any) => {
           </TouchableOpacity>
         </View>
       </View>
-      <View style={[shape.line, {width: '80%'}]}></View>
+      <View style={[shape.line, {width: '70%'}]}></View>
       <TouchableOpacity style={{paddingTop: '5%'}} onPress={goToLogin}>
         <Text style={[texts.m, {color: '#0066CC'}]}>
           Already have an account ? Login
