@@ -6,29 +6,24 @@
  */
 
 import React, {useEffect} from 'react';
-import type {PropsWithChildren} from 'react';
 import {StatusBar, StyleSheet, Text, useColorScheme, View} from 'react-native';
 
 import {Colors} from 'react-native/Libraries/NewAppScreen';
 import {Home} from './src/Home';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 
-import {
-  getFocusedRouteNameFromRoute,
-  NavigationContainer,
-} from '@react-navigation/native';
+import {NavigationContainer} from '@react-navigation/native';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import {Profile} from './src/profile/Profile';
 import {TimerNavigator} from './src/CustomNavigator/CustomNavigator';
 import {LoginNavigator} from './src/CustomNavigator/LoginNavigator';
 import {user} from './src/User';
-import {Login} from './src/Login/Login';
 
 const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
 
-function Test() {
+function Root() {
   return (
     <Tab.Navigator
       screenOptions={({route}) => ({
@@ -78,8 +73,7 @@ function App(): React.JSX.Element {
   };
 
   let client = user;
-  console.log('client', client.getIsLogged());
-  let initialRoute = client.getIsLogged() ? 'Test' : 'Login';
+  let initialRoute = client.getIsLogged() ? 'Root' : 'Login';
 
   return (
     <NavigationContainer>
@@ -95,8 +89,8 @@ function App(): React.JSX.Element {
         />
         <Stack.Screen
           options={{headerShown: false}}
-          name="Test"
-          component={Test}></Stack.Screen>
+          name="Root"
+          component={Root}></Stack.Screen>
       </Stack.Navigator>
     </NavigationContainer>
   );

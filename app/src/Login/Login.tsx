@@ -6,7 +6,7 @@ export const Login = ({navigation}: any) => {
 
   const navigateToHome = () => {
     client.setIsLogged(true);
-    navigation.navigate('Test', {screen: 'Home', initial: false});
+    navigation.navigate('Root', {screen: 'Home', initial: false});
   };
 
   return (
