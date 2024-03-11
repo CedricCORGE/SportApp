@@ -17,18 +17,32 @@ interface Activity {
   interval: IntervalsDto;
 }
 
-const MAP: Map<string, {key: string; color: string; selectedDotColor: string}> =
-  new Map();
+const ACTIVITY: Map<
+  string,
+  {key: string; color: string; selectedDotColor: string}
+> = new Map();
 
-MAP.set('running', {key: 'running', color: 'red', selectedDotColor: 'red'});
-MAP.set('lifting', {key: 'lifting', color: 'green', selectedDotColor: 'green'});
-MAP.set('cycling', {key: 'cycling', color: 'blue', selectedDotColor: 'blue'});
-MAP.set('swimming', {
+ACTIVITY.set('running', {
+  key: 'running',
+  color: 'red',
+  selectedDotColor: 'red',
+});
+ACTIVITY.set('lifting', {
+  key: 'lifting',
+  color: 'green',
+  selectedDotColor: 'green',
+});
+ACTIVITY.set('cycling', {
+  key: 'cycling',
+  color: 'blue',
+  selectedDotColor: 'blue',
+});
+ACTIVITY.set('swimming', {
   key: 'swimming',
   color: 'yellow',
   selectedDotColor: 'yellow',
 });
-MAP.set('interval', {
+ACTIVITY.set('interval', {
   key: 'interval',
   color: 'orange',
   selectedDotColor: 'orange',
@@ -49,20 +63,23 @@ export const Activity = () => {
     let tmp = {};
     let isActivitySelected = false;
     let actiArray: Activity[] = [];
+    setActivitiesArray([]);
 
     Object.keys(activities).forEach((key: string) => {
       let dots: any = [];
+      console.log('test');
 
       for (const index in Object.keys(activities[key]['activities'])) {
         let acti = activities[key]['activities'][index];
 
-        dots.push(MAP.get(acti.type));
+        dots.push(ACTIVITY.get(acti.type));
 
         actiArray.push(acti);
       }
 
       if (format(key, 'yyyy-MM-dd') === selectedDate) {
         isActivitySelected = true;
+        setActivitiesArray(actiArray);
         tmp = {
           ...tmp,
           [format(key, 'yyyy-MM-dd')]: {
@@ -94,7 +111,16 @@ export const Activity = () => {
       }
     });
 
-    setActivitiesArray(actiArray);
+    if (tmp[selectedDate] == undefined) {
+      tmp = {
+        [selectedDate]: {
+          selected: true,
+          selectedColor: 'lightblue',
+          selectedTextColor: 'black',
+          disableTouchEvent: true,
+        },
+      };
+    }
 
     return {
       ...tmp,
@@ -116,20 +142,16 @@ export const Activity = () => {
             enableSwipeMonths={true}
             onDayPress={day => {
               setSelectedDate(day.dateString);
-              console.log(day);
             }}></Calendar>
         </View>
         <View style={[shape.line, layers.centered, {width: '80%'}]}></View>
 
-        <Text
-          style={[
-            texts.title,
-            texts.bold,
-            texts.uppercase,
-            {paddingTop: '2%'},
-          ]}>
-          Activity
-        </Text>
+        <View style={[layers.centered, {paddingTop: '2%'}]}>
+          <Text style={[texts.title, texts.bold, texts.uppercase]}>
+            Activity
+          </Text>
+          <Text>{selectedDate}</Text>
+        </View>
         {activities.length != 0 && (
           <FlatList
             scrollEnabled={false}
