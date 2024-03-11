@@ -9,6 +9,7 @@ import {
 import {user} from '../User';
 import {buttons, layers, shape, texts} from '../style/globalStyle';
 import {useState} from 'react';
+import {HttpService} from '../services/HttpService';
 
 export const Login = ({navigation}: any) => {
   const client = user;
@@ -17,8 +18,15 @@ export const Login = ({navigation}: any) => {
   const [password, onChangePassword] = useState('');
 
   const onLogin = () => {
-    client.setIsLogged(true);
-    navigation.navigate('Root', {screen: 'Home', initial: false});
+    HttpService.postRequest('user/login', {
+      mail: mail,
+      password: password,
+    }).then((response: any) => {
+      if (response.statusCode === 200) {
+        client.setIsLogged(true);
+        navigation.navigate('Root', {screen: 'Home', initial: false});
+      }
+    });
   };
 
   const goToRegister = () => {
@@ -48,7 +56,7 @@ export const Login = ({navigation}: any) => {
           <TouchableOpacity
             style={[buttons.button, {width: '70%', padding: '3%'}]}
             onPress={onLogin}>
-            <Text style={[texts.l, texts.uppercase, texts.bold]}>Register</Text>
+            <Text style={[texts.l, texts.uppercase, texts.bold]}>login</Text>
           </TouchableOpacity>
         </View>
       </View>

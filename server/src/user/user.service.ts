@@ -1,10 +1,11 @@
-import { Injectable } from '@nestjs/common';
+import { HttpException, Injectable } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from './entities/user.entity';
 import { Repository } from 'typeorm';
-import { hash, genSalt } from 'bcrypt';
+import { hash, genSalt, compare } from 'bcrypt';
+import { LoginUserDto } from './dto/login-user.dto';
 
 @Injectable()
 export class UserService {
@@ -20,6 +21,20 @@ export class UserService {
     const encryptedPassword = await hash(createUserDto.password, salt);
     user.password = encryptedPassword;
     return this.userRepository.save(user);
+  }
+
+  async login(loginUserDto: LoginUserDto) {
+    const user = await this.userRepository.findOneBy({
+      email: loginUserDto.email,
+    });
+    if (!user) {
+      throw new HttpException('User not found', 400);
+    }
+    const isPasswordValid = await compare(loginUserDto.password, user.password);
+    if (!isPasswordValid) {
+      throw new HttpException('User not found', 400);
+    }
+    return user;
   }
 
   findAll() {
