@@ -6,20 +6,11 @@ export class User {
   id: number;
 
   @Column({ type: 'varchar', length: 50 })
-  name: string;
+  pseudo: string;
 
   @Column({ type: 'varchar', length: 50 })
   email: string;
 
-  @Column({ type: 'varchar', length: 50 })
+  @Column({ type: 'varchar' })
   password: string;
-
-  @Column({ type: 'int', default: 0 })
-  weight: number;
-
-  @Column({ type: 'int', default: 0 })
-  height: number;
-
-  @Column({ type: 'enum', enum: ['m', 'f', 'u'], default: 'u' })
-  gender: string;
 }

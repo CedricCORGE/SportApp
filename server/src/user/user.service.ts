@@ -1,9 +1,11 @@
-import { Injectable } from '@nestjs/common';
+import { HttpException, Injectable } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from './entities/user.entity';
 import { Repository } from 'typeorm';
+import { hash, genSalt, compare } from 'bcrypt';
+import { LoginUserDto } from './dto/login-user.dto';
 
 @Injectable()
 export class UserService {
@@ -11,15 +13,28 @@ export class UserService {
     @InjectRepository(User) private readonly userRepository: Repository<User>,
   ) {}
 
-  create(createUserDto: CreateUserDto) {
+  async create(createUserDto: CreateUserDto) {
     const user = new User();
-    user.name = createUserDto.name;
+    user.pseudo = createUserDto.pseudo;
     user.email = createUserDto.email;
-    user.password = createUserDto.password;
-    user.weight = createUserDto.weight;
-    user.height = createUserDto.height;
-    user.gender = createUserDto.gender;
+    const salt = await genSalt();
+    const encryptedPassword = await hash(createUserDto.password, salt);
+    user.password = encryptedPassword;
     return this.userRepository.save(user);
+  }
+
+  async login(loginUserDto: LoginUserDto) {
+    const user = await this.userRepository.findOneBy({
+      email: loginUserDto.email,
+    });
+    if (!user) {
+      throw new HttpException('User not found', 400);
+    }
+    const isPasswordValid = await compare(loginUserDto.password, user.password);
+    if (!isPasswordValid) {
+      throw new HttpException('User not found', 400);
+    }
+    return user;
   }
 
   findAll() {
@@ -30,14 +45,13 @@ export class UserService {
     return this.userRepository.findOneBy({ id });
   }
 
-  update(id: number, updateUserDto: UpdateUserDto) {
+  async update(id: number, updateUserDto: UpdateUserDto) {
     const user = new User();
-    user.name = updateUserDto.name;
+    user.pseudo = updateUserDto.pseudo;
     user.email = updateUserDto.email;
-    user.password = updateUserDto.password;
-    user.weight = updateUserDto.weight;
-    user.height = updateUserDto.height;
-    user.gender = updateUserDto.gender;
+    const salt = await genSalt();
+    const encryptedPassword = await hash(updateUserDto.password, salt);
+    user.password = encryptedPassword;
     user.id = id;
     return this.userRepository.save(user);
   }
